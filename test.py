@@ -8,11 +8,12 @@ cam0 = Picamera2(0)
 cam1 = Picamera2(1)
 
 # Define frame sync controls
-ctrls = {"SyncMode": controls.rpi.SyncModeEnum.Server, "FrameRate": 30}
+ctrlsServer = {"SyncMode": controls.rpi.SyncModeEnum.Server, "FrameRate": 30}
+ctrlsClient = {"SyncMode": controls.rpi.SyncModeEnum.Client, "FrameRate": 30}
 
 # Create and configure video configurations
-config0 = cam0.create_video_configuration(controls=ctrls)
-config1 = cam1.create_video_configuration(controls=ctrls)
+config0 = cam0.create_video_configuration(controls=ctrlsServer)
+config1 = cam1.create_video_configuration(controls=ctrlsClient)
 cam0.configure(config0)
 cam1.configure(config1)
 
