@@ -1,69 +1,59 @@
 import cv2
 import numpy as np
 
-# Paths to video files
+# Paths to the MP4 videos
 video0_path = 'cam0.mp4'
 video1_path = 'cam1.mp4'
 
-# Open both videos
+# Open the two video files
 cap0 = cv2.VideoCapture(video0_path)
 cap1 = cv2.VideoCapture(video1_path)
 
 if not cap0.isOpened() or not cap1.isOpened():
-    print("Error opening one or both video files.")
+    print("Error opening video files.")
     exit()
 
-# Get total number of frames
-total_frames = int(min(cap0.get(cv2.CAP_PROP_FRAME_COUNT), cap1.get(cv2.CAP_PROP_FRAME_COUNT)))
+# Get video properties
+width = int(cap0.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap0.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Create display window
-window_name = "Synchronized Playback: ← ↓ = back | → space = forward | q = quit"
+window_name = "Synchronized Video Playback (press 'q' to quit, space/arrow to step)"
 cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
 
 frame_idx = 0
-
 while True:
-    # Set both video readers to the current frame
-    cap0.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-    cap1.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-
     ret0, frame0 = cap0.read()
     ret1, frame1 = cap1.read()
 
     if not ret0 or not ret1:
-        print("End of video or error reading frame.")
+        print("End of video or read error.")
         break
 
-    # Resize frame1 if shape mismatch (precaution)
+    # Resize to match if needed (they should match already)
     if frame0.shape != frame1.shape:
         frame1 = cv2.resize(frame1, (frame0.shape[1], frame0.shape[0]))
 
-    # Combine frames side by side
+    # Concatenate the two frames side by side
     combined = np.hstack((frame0, frame1))
-    cv2.putText(combined, f"Frame {frame_idx+1}/{total_frames}", (20, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    # Show frame
+    # Overlay frame number
+    cv2.putText(combined, f"Frame {frame_idx}", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+
+    # Show the combined frame
     cv2.imshow(window_name, combined)
 
-    # Wait for key press (0 = indefinitely)
+    # Wait for key input (0 = wait indefinitely)
     key = cv2.waitKey(0) & 0xFF
-
-    # Quit
     if key == ord('q'):
         break
-    # Forward: space or right arrow
-    elif key in [ord(' '), 83]:  # space, →
-        if frame_idx < total_frames - 1:
-            frame_idx += 1
-    # Backward: left or down arrow
-    elif key in [81, 84]:  # ←, ↓
-        if frame_idx > 0:
-            frame_idx -= 1
+    elif key in [ord(' '), 83, 81, 82, 84]:  # space or arrow keys
+        frame_idx += 1
+        continue
     else:
-        print("Use ← ↓ to go back, → or space to go forward, 'q' to quit.")
+        print("Press space or arrow keys to advance, 'q' to quit.")
 
-# Cleanup
+# Release resources
 cap0.release()
 cap1.release()
 cv2.destroyAllWindows()
