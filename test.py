@@ -38,9 +38,25 @@ encoder1.sync.wait()
 print("Synchronized recording started.")
 
 # Record for 10 seconds
-time.sleep(10)
+time.sleep(5)
 
 # Stop both recordings
 cam0.stop_recording()
 cam1.stop_recording()
 print("Recording finished.")
+
+#Delay
+time.sleep(20)
+# Wait for hardware sync
+cam0.start_recording(encoder0, 'delay0.h264')
+cam1.start_recording(encoder1, 'delay1.h264')
+
+# Record for 10 seconds
+time.sleep(5)
+
+# Stop both recordings
+cam0.stop_recording()
+cam1.stop_recording()
+print("Recording finished.")
+
+

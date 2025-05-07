@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 
 # Paths to the MP4 videos
-video0_path = 'cam0.mp4'
-video1_path = 'cam1.mp4'
+video0_path = '/home/sicb_pi/buzzCam/cam0.h264'
+video1_path = '/home/sicb_pi/buzzCam/cam1.h264'
 
 # Open the two video files
 cap0 = cv2.VideoCapture(video0_path)
