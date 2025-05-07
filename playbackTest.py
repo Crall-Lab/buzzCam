@@ -47,4 +47,13 @@ while True:
     key = cv2.waitKey(0) & 0xFF
     if key == ord('q'):
         break
-    elif key in [ord]()
+    elif key in [ord(' '), 83, 81, 82, 84]:  # space or arrow keys
+        frame_idx += 1
+        continue
+    else:
+        print("Press space or arrow keys to advance, 'q' to quit.")
+
+# Release resources
+cap0.release()
+cap1.release()
+cv2.destroyAllWindows()
